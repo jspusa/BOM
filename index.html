@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>BOM計算機</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        input[type="number"], input[type="text"] {
+            width: 100px;
+            padding: 5px;
+            margin: 5px;
+        }
+        .material-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            cursor: grab;
+        }
+        .material-input strong {
+            margin-right: 10px;
+        }
+        .drag-over {
+            background-color: #ccc;
+        }
+        .add-button, .calculate-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+        }
+        .calculate-button {
+            background-color: #008CBA;
+        }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 8px;
+            text-align: left;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        .results-section {
+            margin-top: 20px;
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: none;
+        }
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .common-ingredients {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .category {
+            flex: 1;
+            margin: 0 5px;
+        }
+        .category h3 {
+            margin: 0;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .category-content {
+            display: none;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 10px 0;
+        }
+        .category-content button {
+            flex: 1 0 auto;
+            margin: 2px;
+            padding: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .category.meat h3 {
+            background-color: #FF8C00;
+        }
+        .category.plant h3 {
+            background-color: #90EE90;
+        }
+        .category.nutrient h3 {
+            background-color: #ADD8E6;
+        }
+        .category.disabled h3 {
+            background-color: #d3d3d3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BOM計算機</h1>
+        <form id="bomForm">
+            <label for="yieldRate">出成率（%）：</label>
+            <input type="number" id="yieldRate" min="0" step="1" required placeholder="輸入出成率">
+            <button type="button" class="calculate-button" onclick="calculateMaterialsNeeded()">計算BOM表</button>
+            <div id="messageContainer" class="message"></div>
+        </form>
+        <div class="common-ingredients">
+            <div class="category meat">
+                <h3 onclick="toggleCategory('meat')">肉類</h3>
+                <div class="category-content" id="meat">
+                    <button type="button" onclick="addCommonMaterial('雞肉')">雞肉</button>
+                    <button type="button" onclick="addCommonMaterial('羊肉')">羊肉</button>
+                    <button type="button" onclick="addCommonMaterial('鴨肉')">鴨肉</button>
+                    <button type="button" onclick="addCommonMaterial('牛肉')">牛肉</button>
+                    <button type="button" onclick="addCommonMaterial('鹿肉')">鹿肉</button>
+                    <button type="button" onclick="addCommonMaterial('火雞肉')">火雞肉</button>
+                    <button type="button" onclick="addCommonMaterial('鴨肝')">鴨肝</button>
+                </div>
+            </div>
+            <div class="category plant">
+                <h3 onclick="toggleCategory('plant')">植物類</h3>
+                <div class="category-content" id="plant">
+                    <button type="button" onclick="addCommonMaterial('豌豆蛋白')">豌豆蛋白</button>
+                    <button type="button" onclick="addCommonMaterial('樹薯澱粉')">樹薯澱粉</button>
+                    <button type="button" onclick="addCommonMaterial('椰子甘油')">椰子甘油</button>
+                    <button type="button" onclick="addCommonMaterial('甜菜根粉')">甜菜根粉</button>
+                    <button type="button" onclick="addCommonMaterial('亞麻仁籽油')">亞麻仁籽油</button>
+                </div>
+            </div>
+            <div class="category nutrient">
+                <h3 onclick="toggleCategory('nutrient')">營養添加類</h3>
+                <div class="category-content" id="nutrient">
+                    <button type="button" onclick="addCommonMaterial('綜合礦物質')">綜合礦物質</button>
+                    <button type="button" onclick="addCommonMaterial('綜合維生素')">綜合維生素</button>
+                    <button type="button" onclick="addCommonMaterial('磷酸鈣')">磷酸鈣</button>
+                    <button type="button" onclick="addCommonMaterial('維生素E')">維生素E</button>
+                    <button type="button" onclick="addCommonMaterial('維生素B1')">維生素B1</button>
+                </div>
+            </div>
+        </div>
+        <div id="materialInputs"></div>
+        <div class="results-section">
+            <h2>每公斤半成品，所需原料投入量：</h2>
+            <ul id="resultsList"></ul>
+            <h2>BOM表用：</h2>
+            <table id="bomTable">
+                <tr>
+                    <th>原料名稱</th>
+                    <th>組成用量 (kg)</th>
+                    <th>底數</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+<script>
+    let draggedElement = null;
+
+    function showMessage(message, type) {
+        const messageContainer = document.getElementById('messageContainer');
+        messageContainer.textContent = message;
+        messageContainer.className = 'message ' + type;
+        messageContainer.style.display = 'block';
+        setTimeout(() => {
+            messageContainer.style.display = 'none';
+        }, 3000);
+    }
+
+    function toggleCategory(categoryId) {
+        const categoryContent = document.getElementById(categoryId);
+        const allCategories = document.querySelectorAll('.category-content');
+        allCategories.forEach(content => {
+            if (content.id !== categoryId) {
+                content.style.display = 'none';
+            }
+        });
+        categoryContent.style.display = categoryContent.style.display === 'none' ? 'flex' : 'none';
+
+        const allHeaders = document.querySelectorAll('.category');
+        allHeaders.forEach(header => {
+            const headerTitle = header.querySelector('h3');
+            if (header.querySelector('.category-content') !== categoryContent) {
+                header.classList.toggle('disabled', categoryContent.style.display === 'flex');
+            } else {
+                header.classList.remove('disabled');
+            }
+        });
+    }
+
+    function addMaterialInput(name = '', amount = '') {
+        const container = document.getElementById('materialInputs');
+        const index = container.children.length + 1;
+        const newInput = document.createElement('div');
+        newInput.className = 'material-input';
+        newInput.setAttribute('draggable', 'true');
+        newInput.innerHTML = `
+            <strong>${index}. </strong>
+            <label for="materialName${index}">原料名稱：</label>
+            <input type="text" name="materialName[]" id="materialName${index}" value="${name}" placeholder="名稱">
+            <label for="materialAmount${index}">原料量（公斤）：</label>
+            <input type="number" name="materialAmount[]" id="materialAmount${index}" value="${amount}" min="0" step="0.01" placeholder="公斤">
+            <button type="button" onclick="removeMaterialInput(this)">刪除</button>
+        `;
+        newInput.addEventListener('dragstart', handleDragStart);
+        newInput.addEventListener('dragover', handleDragOver);
+        newInput.addEventListener('drop', handleDrop);
+        newInput.addEventListener('dragend', handleDragEnd);
+        container.appendChild(newInput);
+        updateIndexes();
+    }
+
+    function addCommonMaterial(name) {
+        addMaterialInput(name);
+    }
+
+    function removeMaterialInput(button) {
+        const container = document.getElementById('materialInputs');
+        container.removeChild(button.parentNode);
+        updateIndexes();
+    }
+
+    function handleDragStart(e) {
+        draggedElement = this;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', this.outerHTML);
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        this.classList.add('drag-over');
+    }
+
+    function handleDrop(e) {
+        e.preventDefault();
+        if (draggedElement !== this) {
+            this.parentNode.insertBefore(draggedElement, this);
+            this.classList.remove('drag-over');
+            updateIndexes();
+        }
+    }
+
+    function handleDragEnd(e) {
+        document.querySelectorAll('.material-input').forEach(col => col.classList.remove('drag-over'));
+    }
+
+    function updateIndexes() {
+        const materials = document.querySelectorAll('.material-input');
+        materials.forEach((material, index) => {
+            material.querySelector('strong').textContent = `${index + 1}. `;
+        });
+    }
+
+    function calculateMaterialsNeeded() {
+        const yieldRate = parseFloat(document.getElementById('yieldRate').value) / 100;
+        if (isNaN(yieldRate) || yieldRate <= 0) {
+            showMessage("請輸入有效的出成率（大於0）。", "error");
+            return;
+        }
+
+        const names = document.querySelectorAll('input[name="materialName[]"]');
+        const amounts = document.querySelectorAll('input[name="materialAmount[]"]');
+        let totalMaterialInput = 0;
+        let valid = true;
+        amounts.forEach(amount => {
+            const value = parseFloat(amount.value);
+            if (isNaN(value) || value <= 0) {
+                showMessage("請輸入有效的原料量（大於0）。", "error");
+                valid = false;
+                return;
+            }
+            totalMaterialInput += value;
+        });
+        if (!valid || totalMaterialInput <= 0) {
+            return;
+        }
+
+        const totalProductOutput = totalMaterialInput * yieldRate;
+        const materialsData = [];
+
+        names.forEach((name, i) => {
+            const individualInput = parseFloat(amounts[i].value);
+            const materialPerKgProduct = individualInput / totalProductOutput;
+            const percentageOfTotal = (individualInput / totalMaterialInput) * 100;
+            materialsData.push({
+                name: name.value,
+                materialPerKgProduct: materialPerKgProduct,
+                percentageOfTotal: percentageOfTotal
+            });
+        });
+
+        materialsData.sort((a, b) => b.percentageOfTotal - a.percentageOfTotal);
+
+        const resultsList = document.getElementById('resultsList');
+        const bomTable = document.getElementById('bomTable');
+        resultsList.innerHTML = '';
+        while (bomTable.rows.length > 1) {
+            bomTable.deleteRow(1);
+        }
+
+        materialsData.forEach((material, index) => {
+            const resultItem = document.createElement('li');
+            resultItem.textContent = `${index + 1}. ${material.name}: ${material.materialPerKgProduct.toFixed(4)} 公斤 (${material.percentageOfTotal.toFixed(2)}%)`;
+            resultsList.appendChild(resultItem);
+
+            let base = 1;
+            let formattedAmount = material.materialPerKgProduct;
+            while (formattedAmount < 0.1) {
+                base *= 10;
+                formattedAmount *= 10;
+            }
+            const row = bomTable.insertRow(-1);
+            row.insertCell(0).textContent = `${index + 1}. ${material.name}`;
+            row.insertCell(1).textContent = `${formattedAmount.toFixed(3)} 公斤`;
+            row.insertCell(2).textContent = base;
+        });
+
+        showMessage("計算成功！", "success");
+
+        // 收起所有類別
+        document.querySelectorAll('.category-content').forEach(categoryContent => {
+            categoryContent.style.display = 'none';
+        });
+
+        // 恢復所有標題顏色
+        document.querySelectorAll('.category').forEach(header => {
+            header.classList.remove('disabled');
+        });
+    }
+
+    // 初始化，打開所有類別
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.category-content').forEach(categoryContent => {
+            categoryContent.style.display = 'none';
+        });
+    });
+</script>
+
+</body>
+</html>
