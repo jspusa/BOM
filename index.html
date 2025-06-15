@@ -3,58 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>BOM計算機</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --color-primary: #007bff;
-            --color-success: #28a745;
-            --color-hover: #0069d9;
-            --color-bg: #f7f7f7;
-            --color-text: #333;
-            --color-border: #dee2e6;
-            --color-light: #f8f9fa;
-        }
         body {
-            font-family: 'Noto Sans TC', Arial, sans-serif;
-
-            background-color: var(--color-bg);
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
             margin: 0;
             padding: 20px;
-            line-height: 1.6;
-            color: var(--color-text);
         }
         h1, h2 {
-            color: var(--color-text);
+            color: #333;
         }
         .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 30px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-
-        }
-        header {
-            background: linear-gradient(135deg, var(--color-primary), #0056b3);
-            color: #fff;
             padding: 20px;
-            text-align: center;
-            border-radius: 8px 8px 0 0;
-            margin: -30px -30px 30px;
-        }
-        .content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        .input-section, .output-section {
-            padding: 0 10px;
-        }
-        @media (max-width: 768px) {
-            .content {
-                grid-template-columns: 1fr;
-            }
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         form {
             display: flex;
@@ -66,63 +31,39 @@
             margin-right: 10px;
         }
         input[type="number"], input[type="text"] {
-            width: 120px;
-            padding: 6px 8px;
+            width: 100px;
+            padding: 5px;
             margin: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            transition: border-color 0.2s;
-        }
-        input[type="number"]:focus, input[type="text"]:focus {
-            outline: none;
-            border-color: var(--color-primary);
         }
         .material-input {
             display: flex;
             align-items: center;
             margin-bottom: 10px;
-            background-color: var(--color-light);
+            background-color: #f0f0f0;
             padding: 10px;
-            border: 1px solid var(--color-border);
-            border-radius: 4px;
+            border: 1px solid #ddd;
             cursor: grab;
         }
         .material-input strong {
             margin-right: 10px;
         }
         .drag-over {
-            background-color: #e2e6ea;
+            background-color: #ccc;
         }
-        .add-button, .calculate-button, .reset-button {
-            color: #fff;
+        .add-button, .calculate-button {
+            background-color: #4CAF50;
+            color: white;
             border: none;
             cursor: pointer;
-            padding: 8px 16px;
+            padding: 10px;
             font-size: 16px;
-            margin: 5px;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        .add-button {
-            background-color: var(--color-success);
-        }
-        .add-button:hover {
-            background-color: #218838;
+            margin: 10px;
         }
         .calculate-button {
-            background-color: var(--color-primary);
-        }
-        .calculate-button:hover {
-            background-color: var(--color-hover);
-        }
-        .reset-button {
-            background-color: #6c757d;
-        }
-        .reset-button:hover {
-            background-color: #5a6268;
+            background-color: #008CBA;
         }
         table, th, td {
-            border: 1px solid var(--color-border);
+            border: 1px solid black;
             border-collapse: collapse;
             padding: 8px;
             text-align: left;
@@ -133,10 +74,7 @@
         }
         th {
             background-color: #007bff;
-            color: #fff;
-        }
-        tr:nth-child(even) {
-            background-color: var(--color-light);
+            color: white;
         }
         .results-section {
             margin-top: 20px;
@@ -144,7 +82,7 @@
         .message {
             padding: 10px;
             margin: 10px 0;
-            border-radius: 4px;
+            border-radius: 5px;
             display: none;
         }
         .message.success {
@@ -158,7 +96,7 @@
         .common-ingredients {
             display: flex;
             justify-content: space-between;
-            margin: 20px 0;
+            margin-top: 20px;
         }
         .category {
             flex: 1;
@@ -168,33 +106,24 @@
             margin: 0;
             cursor: pointer;
             padding: 10px;
-            border-radius: 4px;
+            border-radius: 5px;
             font-size: 14px;
-            color: #fff;
-            transition: background-color 0.3s;
         }
         .category-content {
             display: none;
             flex-wrap: wrap;
             gap: 5px;
             padding: 10px 0;
-            background-color: var(--color-light);
-            border-radius: 4px;
         }
         .category-content button {
             flex: 1 0 auto;
             margin: 2px;
-            padding: 5px 8px;
+            padding: 5px;
             background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
-            transition: background-color 0.3s;
-        }
-        .category-content button:hover {
-            background-color: var(--color-hover);
         }
         .category.meat h3 {
             background-color: #FF8C00;
@@ -207,22 +136,16 @@
         }
         .category.disabled h3 {
             background-color: #d3d3d3;
-            color: #666;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>BOM計算機</h1>
-        </header>
-        <div class="content">
-        <div class="input-section">
+        <h1>BOM計算機</h1>
         <form id="bomForm">
             <label for="yieldRate">出成率（%）：</label>
             <input type="number" id="yieldRate" min="0" step="1" required placeholder="輸入出成率">
             <button type="button" class="calculate-button" onclick="calculateMaterialsNeeded()">計算BOM表</button>
-            <button type="button" class="reset-button" onclick="resetForm()">清除</button>
             <div id="messageContainer" class="message"></div>
         </form>
         <div class="common-ingredients">
@@ -259,10 +182,7 @@
                 </div>
             </div>
         </div>
-        <button type="button" class="add-button" onclick="addMaterialInput()">新增原料</button>
         <div id="materialInputs"></div>
-        </div>
-        <div class="output-section">
         <div class="results-section">
             <h2>每公斤半成品，所需原料投入量：</h2>
             <ul id="resultsList"></ul>
@@ -275,8 +195,6 @@
                 </tr>
             </table>
         </div>
-        </div>
-        </div> <!-- end content -->
     </div>
 
 <script>
@@ -377,19 +295,6 @@
         });
     }
 
-    function resetForm() {
-        document.getElementById('bomForm').reset();
-        document.getElementById('materialInputs').innerHTML = '';
-        addMaterialInput();
-        document.getElementById('resultsList').innerHTML = '';
-        const bomTable = document.getElementById('bomTable');
-        while (bomTable.rows.length > 1) {
-            bomTable.deleteRow(1);
-        }
-        document.querySelectorAll('.category-content').forEach(c => c.style.display = 'none');
-        document.querySelectorAll('.category').forEach(h => h.classList.remove('disabled'));
-    }
-
     function calculateMaterialsNeeded() {
         const yieldRate = parseFloat(document.getElementById('yieldRate').value) / 100;
         if (isNaN(yieldRate) || yieldRate <= 0) {
@@ -467,9 +372,11 @@
         });
     }
 
-    // 初始化
+    // 初始化，打開所有類別
     document.addEventListener('DOMContentLoaded', () => {
-        resetForm();
+        document.querySelectorAll('.category-content').forEach(categoryContent => {
+            categoryContent.style.display = 'none';
+        });
     });
 </script>
 
